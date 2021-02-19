@@ -5,54 +5,141 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>FormValidtion</title>
-
-     <!-- Font Icon -->
-     <link rel="stylesheet" href="fonts/material-icon/css/material-design-iconic-font.min.css">
-
-     <!-- Main css -->
-     <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+    <style> 
+    .error span{
+      display:none;
+    }
+      </style>
 </head>
-<body>
-    <form action="" method="POST">
-     <!-- Sign up form -->
-     <section class="signup">
-            <div class="container">
-                <div class="signup-content">
-                    <div class="signup-form">
-                        <h2 class="form-title">Sign up</h2>
-                        <form method="POST" class="register-form" id="register-form">
-                            <div class="form-group">
-                                <label for="name"><i class="zmdi zmdi-account material-icons-name"></i></label>
-                                <input type="text" name="name" id="name" placeholder="Your Name"/>
-                            </div>
-                            <div class="form-group">
-                                <label for="email"><i class=""></i></label>
-                                <input type="email" name="email" id="email" placeholder="Your Email"/>
-                            </div>
-                            <div class="form-group">
-                                <label for="pass"><i class="zmdi zmdi-lock"></i></label>
-                                <input type="password" name="pass" id="pass" placeholder="Password"/>
-                            </div>
-                            <div class="form-group">
-                                <label for="re-pass"><i class="zmdi zmdi-lock-outline"></i></label>
-                                <input type="password" name="re_pass" id="re_pass" placeholder="Repeat your password"/>
-                            </div>
-                            <div class="form-group">
-                                <input type="checkbox" name="agree-term" id="agree-term" class="agree-term" />
-                                <label for="agree-term" class="label-agree-term"><span><span></span></span>I agree all statements in  <a href="#" class="term-service">Terms of service</a></label>
-                            </div>
-                            <div class="form-group form-button">
-                                <input type="submit" name="signup" id="signup" class="form-submit" value="Register"/>
-                            </div>
-                        </form>
-                    </div>
-                    <div class="signup-image">
-                        <figure><img src="images/signup-image.jpg" alt="sing up image"></figure>
-                        <a href="#" class="signup-image-link">I am already member</a>
-                    </div>
-                </div>
-            </div>
-        </section>
+<body class="bg-dark" style="font-family:'Times New Roman', Times, serif;">
+
+<?php
+
+$fname = $lname = $email = $gender = $pass = $repass = $error = "";
+$fnameerror = $lnameerror = $emailerror = $passerror = $repasserror = "";
+
+
+
+
+if($_SERVER["REQUEST_METHOD"] == "POST"){
+  function cleaninput($field){
+    $field = trim($field);
+    $field = stripcslashes($field);
+    $field = htmlspecialchars($field);
+    return $field;}
+
+$fname= cleaninput( $_POST['fname']);
+$lname=cleaninput($_POST['lname']);
+$email=cleaninput($_POST['email']);
+$gender=cleaninput($_POST['gender']);
+$pass=cleaninput($_POST['pass']);
+$repass=cleaninput($_POST['repass']);
+
+
+if(isset($fname) && $fname != "" && isset($lname) && $lname != "" && isset($email) && $email != "" && isset($gender) && $gender != ""
+&& isset($pass) && $pass != "" && isset($repass) && $repass != ""){
+
+  
+
+if(!preg_match("/^[a-zA-Z ]*$/",$fname)){
+  $fnameerror = "Only letters and White Spaces are allowed...!";
+}
+else if(!preg_match("/^[a-zA-Z ]*$/",$lname)){
+  $lnameerror = "Only letters and White Spaces are allowed...!";
+}
+else if(!filter_var($email, FILTER_VALIDATE_EMAIL)){
+  $emailerror = "Please Enter valid Email...";
+}
+else if(strlen($pass) < 8 ){
+    $passerror = "Password must have 8 or more Characters..";
+}
+else if($pass != $repass){
+    $repasserror = "Your password doesn't match...";
+}
+else {
+  $fname = $lname = $email = $gender = $pass = $repass = $error = "";
+  echo '<script type="text/javascript">
+  					swal("", "Registered Successfully", "success");
+  					</script>';
+}
+
+}
+
+else {
+  $error = "You must Fill All Fields....";
+}
+
+}
+
+?>
+
+
+    <div class="container">
+        <br><br>
+  <div class="row"  style="background-color: white; border-radius: 15px;"> 
+    <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);  ?>" method="POST" class="col-5 ml-5"><br>
+    <h1>Sign up</h1><br>
+
+    <label for="">First Name</label>:
+    <input type="text" class="form-control" name="fname" value="<?php if($fname) {echo $fname;} ?>">
+    <span style="color:red;"><?php 
+    if($fnameerror){
+    echo $fnameerror; 
+     }?></span><br>
+
+    <label for="">Last Name</label>:
+    <input type="text" class="form-control" name="lname" value="<?php echo $lname ?>" >
+    <span style="color:red;"><?php 
+    if($lnameerror){
+    echo $lnameerror; 
+     }?></span><br>
+
+    <label for="">Email</label>:
+    <input type="text" class="form-control" name="email" value="<?php echo $email ?>">
+    <span style="color:red;"><?php 
+    if($emailerror){
+    echo $emailerror; 
+     }?></span><br>
+    
+    <label for="">Gender:</label><br>
+    <input type="radio" name="gender" id="" checked >Male
+    <input type="radio" name="gender" id="" class="p-5 ml-5 " >Female <br><br>
+
+    <label for="">Password</label>:
+    <input type="password" class="form-control" name="pass" value="<?php echo $pass ?>">
+    <span style="color:red;"><?php 
+    if($passerror){
+    echo $passerror; 
+     }?></span><br>
+
+    <label for="">Retype-Password</label>:
+    <input type="password" class="form-control" name="repass" value="<?php echo $repass ?>">
+    <span style="color:red;"><?php 
+    if($repasserror){
+    echo $repasserror; 
+     }?></span><br>
+
+    <button type="submit" name="submit" class="btn btn-primary">Register</button><br><br>
+
+    <div class="error" style="">
+      <?php
+      if($error){
+        echo "<span style='display:block;background-color:red;color:white;padding:10px;'>.$error.</span>";
+      }
+      ?>
+    </div><br><br>
     </form>
+    <img src="images/signin-image.jpg" alt="" class="" style="margin-left: 200px;margin-top: 100px" height="400px" width="350px">
+  </div>
+  <br><br>
+</div>
+
+
+
+
+
 </body>
 </html>
